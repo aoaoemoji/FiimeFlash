@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-07 15:15:13
+# @Last Modified time: 2022-05-09 00:18:09
 
 import os
 import time
@@ -14,7 +14,7 @@ ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
 
 print("当前目录为:%s"%(path))
-# 检测程序目录是否完整
+# 检测程序目录是否完整 V2.0版本
 def binfinder():
 	print("正在检测工作目录...")
 	time.sleep(3)
@@ -52,7 +52,85 @@ def flashsingle(order):
 def vab():
 	pass
 
-
+def onlya(): # 新增onlya刷机方案 3.0版本
+	while True:
+		wipeuser = input("是否双清用户数据(Y/N):\n")
+		if wipeuser == "Y":
+			print("清除双清用户数据")
+			os.chdir(ospath)
+			os.system("fastboot erase metadata")
+			os.system("fastboot erase userdata")
+			break
+		elif  wipeuser == "N":
+			print("取消双清用户数据")
+			break
+		else:
+			print("输入有误，重新输入！")
+	while True:
+		wipedata = input("是否清除DATA分区(Y/N),某些时候不清除可能卡开机:\n")
+		if wipedata == "Y":
+			print("清除DATA分区")
+			os.chdir(ospath)
+			os.system("fastboot -w")
+			break
+		elif  wipedata == "N":
+			print("取消清除DATA分区")
+			break
+		else:
+			print("输入有误，重新输入！")
+	while True:
+		sureflash =  input("确认开始刷机(Y/N):\n")
+		if sureflash == "Y":
+			print("确认执行刷机操作...")
+			time.sleep(2)
+			os.system("cls")
+			filelist = os.listdir(imgpath)                                
+			print("当前获取以下镜像文件:\n%s"%(filelist))
+			print("3秒后自动开始刷机操作...")
+			time.sleep(3)
+			# 添加一个防止小白的功能 V3.0版本
+			errorimg_list = ['system.img','vendor.img','product.img','odm.img','system_ext.img']
+			for image_id in filelist:
+				position=imgpath+"\\"+image_id # 镜像文件
+				aa=image_id.replace('.img','') # 分区名字
+				if image_id in errorimg_list:
+					print("请检查images镜像文件夹，当前有不被允许的镜像:%s存在!"%(image_id))
+					time.sleep(3)
+					exit()
+				else:
+					if image_id =="NON-HLOS.img":
+						os.rename(image_id, "modem.img")
+					elif image_id =="uefi_sec.img":
+						os.rename(image_id, "uefisecapp.img")
+					elif image_id =="qupv3fw.img":
+						os.rename(image_id, "qupfw.img")
+					elif image_id =="km4.img":
+						os.rename(image_id, "keymaster.img")
+					elif image_id =="dspso.img":
+						os.rename(image_id, "dsp.img")
+					elif image_id =="BTFM.img":
+						os.rename(image_id, "bluetooth.img")
+					else :
+						print("喵~")
+			for imgxxx in filelist:
+				kkpath=imgpath+"\\"+imgxxx # 镜像文件
+				bb=imgxxx.replace('.img','') # 分区名字
+				flash(bb,kkpath)
+			# 重启设备 
+			print("刷机完成!即将重启设备...")
+			time.sleep(3)
+			flashsingle("reboot")
+			print("刷机完成!30秒后自动退出！")
+			time.sleep(30)
+			break
+		elif sureflash == "N":
+			print("取消刷机操作,正在退出程序...")
+			time.sleep(3)
+			os.system("cls")
+			exit()
+			break
+		else:
+			print("输入有误，重新输入！")
 
 
 def erofs():
@@ -85,23 +163,31 @@ def erofs():
 		sureflash =  input("确认开始刷机(Y/N):\n")
 		if sureflash == "Y":
 			print("确认执行刷机操作...")
+			time.sleep(2)
+			os.system("cls")
 			filelist = os.listdir(imgpath)                                
 			print("当前获取以下镜像文件:\n%s"%(filelist))
 			print("3秒后自动开始刷机操作...")
 			time.sleep(3)
+			# 添加一个防止小白的功能 V3.0版本
+			errorimg_list = ['system.img','vendor.img','product.img','odm.img','system_ext.img']
 			for image_id in filelist:
 				position=imgpath+"\\"+image_id # 镜像文件
 				aa=image_id.replace('.img','') # 分区名字
-				if aa == "vendor_dlkm":
-					flashsingle("reboot fastboot")
-					flashsingle("create-logical-partition vendor_dlkm_a")
-					flashsingle("create-logical-partition vendor_dlkm_b 0")
-					flash("vendor_dlkm_a",position)
-				elif aa == "super":
-					flash(aa,position)
+				if image_id in errorimg_list:
+					print("请检查images镜像文件夹，当前有不被允许的镜像:%s存在!"%(image_id))
+					time.sleep(3)
+					exit()
 				else:
-					flash(aa+"_ab",position)
-				print("flash "+aa+"_ab "+ image_id)
+					if aa == "vendor_dlkm":
+						flashsingle("reboot fastboot")
+						flashsingle("create-logical-partition vendor_dlkm_a")
+						flashsingle("create-logical-partition vendor_dlkm_b 0")
+						flash("vendor_dlkm_a",position)
+					elif aa == "super":
+						flash(aa,position)
+					else:
+						flash(aa+"_ab",position)
 			# 设置活动分区
 			flashsingle("set_active a")
 			# 重启设备 
@@ -127,7 +213,7 @@ def erofs():
 def mainleader():
 	str1= "===="
 	title = "欢迎使用FiimeFlash刷机脚本工具(作者:奥奥)"
-	version = "Version:2022年5月6日11:22:08"
+	version = "Version:3.0.0"
 	web = "官网: https://mi.fiime.cn   技术支持:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))
@@ -142,11 +228,13 @@ def mainleader():
 	print("1.Erofs机型:\n[红米K50(rubens) 红米K50Pro(matisse) 小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)]")
 	print("	") 
 	print("2.Vab机型：\n[小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)]")
+	print("	") 
+	print("3.OnlyA机型：\n[小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)]")
 	print('{:=^80}'.format(str1)) 
 
 	while True:
 		userchocie = int(input("请输入数字指令:\n"))
-		if userchocie <= 0 or userchocie > 2:
+		if userchocie <= 0 or userchocie > 3:
 			print("输入有误,请重新输入!")
 
 		else:
@@ -159,11 +247,24 @@ def mainleader():
 				erofs()
 				# vab()  通用暂时留空吧
 				break
+			elif  userchocie == 3:
+				print("您选择了:%s，这是OnlyA机型"%(userchocie))
+				onlya()
+				# vab()  通用暂时留空吧
+				break
 			else:
 				os.system("cls")
 				print('程序异常，正在退出...')
 				time.sleep(3)
 				exit()
+
+
+
+
+
+
+
+
 
 # 检测工作环境		
 binfinder()
