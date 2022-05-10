@@ -2,16 +2,18 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-09 00:18:09
+# @Last Modified time: 2022-05-10 23:42:24
 
 import os
 import time
+import shutil
 
 
-
-path = os.getcwd()
+path = os.path.dirname(os.path.realpath(__file__))
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
+boot_patch = os.path.dirname(os.path.realpath(__file__)) + "\\images\\boot.img"
+exe_path = path + '\\lib'
 
 print("当前目录为:%s"%(path))
 # 检测程序目录是否完整 V2.0版本
@@ -46,6 +48,29 @@ def flashsingle(order):
 	os.chdir(ospath)
 	os.system("fastboot.exe "+ " " + order)
 
+# 新增修补boot文件
+def fixboot():
+	while True:
+		dodo = input("是否需要修补boot分区?(Y/N):"+"\n")
+		if dodo == "Y":
+			os.chdir(exe_path) # 目录切换到boot_sh脚本
+			shutil.copyfile(boot_patch, exe_path + "\\boot.img")
+			os.system("boot_patch.bat boot.img")
+			print("修补完成！")
+			os.remove(exe_path + "\\boot.img")
+			os.remove(boot_patch)
+			shutil.copyfile(exe_path + "\\new-boot.img",boot_patch)
+			os.remove(exe_path + "\\new-boot.img")
+			print("替换原版boot完成！")
+			break
+
+		elif dodo == "N":
+			print("您选择了取消修补boot,即将开始操作...")
+			time.sleep(1)
+			break
+		else:
+			print("输入错误，请重新输入!")
+			break
 
 
 # 开始刷机脚本调用
@@ -53,6 +78,7 @@ def vab():
 	pass
 
 def onlya(): # 新增onlya刷机方案 3.0版本
+	fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
@@ -134,6 +160,7 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 
 
 def erofs():
+	fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
