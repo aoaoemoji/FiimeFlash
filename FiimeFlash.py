@@ -2,17 +2,17 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-10 23:42:24
+# @Last Modified time: 2022-05-10 23:53:18
 
 import os
 import time
 import shutil
 
 
-path = os.path.dirname(os.path.realpath(__file__))
+path = os.getcwd()
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
-boot_patch = os.path.dirname(os.path.realpath(__file__)) + "\\images\\boot.img"
+boot_patch = path + "\\images\\boot.img"
 exe_path = path + '\\lib'
 
 print("当前目录为:%s"%(path))
