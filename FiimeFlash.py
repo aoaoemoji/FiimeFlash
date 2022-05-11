@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-11 11:04:35
+# @Last Modified time: 2022-05-11 11:47:36
 
 import os
 import time
@@ -15,6 +15,7 @@ ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
 boot_patch = path + "\\images\\boot.img"
 exe_path = path + '\\lib'
+
 
 print("当前目录为:%s"%(path))
 # 检测程序目录是否完整 V2.0版本
@@ -33,7 +34,7 @@ def binfinder():
 		exit()
 	else:
 		print("当前工作环境完整，检测通过!")
-		time.sleep(1)
+		time.sleep(2)
 		os.system("cls")
 		pass
 
@@ -42,8 +43,14 @@ def binfinder():
 
 # 识别机型代码 V4.0
 def getcode():
+	global f_code
 	code = str(path)
+	re_miuiversion = re.search( r'(V[0-9.EDV]{10,40}|[0-9]{2}[0-9.]{2,3}[0-9]{1,2})', code, re.M)
 	re_code = re.search( r'_[a-z]{3,8}_', code, re.M)
+	if re_miuiversion:
+		miuiversion = re_miuiversion.group()
+	else:
+		miuiversion = "无法识别MIUI版本"
 	if re_code:
 		f_code = re_code.group().replace("_","")
 		devicelist = {'matisse':'红米K50 Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
@@ -52,36 +59,42 @@ def getcode():
 		blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
 		clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
 		if f_code in alist:
-			print("当前识别到代号为:%s,机型为:%s,类型为:Erofs机型"%(f_code,devicename))
+			print("-------------------------------------------------------------------------------------- ")
+			print("当前识别到代号为:%s,机型为:%s,类型为:Erofs机型,MIUI版本:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
 			sure = input("识别是否准确?(Y/N):\n")
 			if sure == 'Y':
 				print("开始刷机...")
 				erofs()
 			elif sure == 'N':
 				print("已经取消...")
-				pass
+				mainchoice()
 			else:
 				pass
 		elif f_code in blist:
-			print("当前识别到代号为:%s,机型为:%s,类型为:VAB机型"%(f_code,devicename))
+			print("-------------------------------------------------------------------------------------- ")
+			print("当前识别到代号为:%s,机型为:%s,类型为:VAB机型,MIUI版本:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
 			sure = input("识别是否准确?(Y/N):\n")
 			if sure == 'Y':
 				print("开始刷机...")
 				erofs()
 			elif sure == 'N':
 				print("已经取消...")
-				pass
+				mainchoice()
 			else:
 				pass
 		elif f_code in clist:
-			print("当前识别到代号为:%s,机型为:%s,类型为:OnlyA机型"%(f_code,devicename))
+			print("-------------------------------------------------------------------------------------- ")
+			print("当前识别到代号为:%s,机型为:%s,类型为:OnlyA机型,MIUI版本:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
 			sure = input("识别是否准确?(Y/N):\n")
 			if sure == 'Y':
 				print("开始刷机...")
 				onlya()
 			elif sure == 'N':
 				print("已经取消...")
-				pass
+				mainchoice()
 			else:
 				pass
 		else:
@@ -215,6 +228,37 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 			print("输入有误，重新输入！")
 
 
+# 开始菜单 V4.1
+def mainchoice():
+	print('{:=^80}'.format(str1)) 
+	print("请输入对应的\"数字\"指令选择机型进行刷机操作:")
+	print("1.Erofs机型:\n[红米K50(rubens) 红米K50Pro(matisse) 小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)]")
+	print("	") 
+	print("2.Vab机型：\n[小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)]")
+	print("	") 
+	print("3.OnlyA机型：\n[小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)]")
+	print('{:=^80}'.format(str1)) 
+
+	while True:
+		userchocie = str(input("请输入数字指令:\n"))
+		if userchocie == "1":
+			print("您选择了:%s，这是Erofs机型"%(userchocie))
+			erofs()
+			break
+		elif  userchocie == "2":
+			print("您选择了:%s，这是Vab机型"%(userchocie))
+			erofs()
+			# vab()  通用暂时留空吧
+			break
+		elif  userchocie == "3":
+			print("您选择了:%s，这是OnlyA机型"%(userchocie))
+			onlya()
+			# vab()  通用暂时留空吧
+			break
+		else:
+			os.system("cls")
+			print("输入有误,请重新输入!")
+			time.sleep(1)
 def erofs():
 	fixboot()
 	while True:
@@ -290,10 +334,9 @@ def erofs():
 			print("输入有误，重新输入！")
 
 
-
-
 # 程序引导入口
 def mainleader():
+	global str1
 	str1= "===="
 	title = "欢迎使用FiimeFlash刷机脚本工具(作者:奥奥)"
 	version = "Version:4.1.0"
@@ -310,46 +353,10 @@ def mainleader():
 	time.sleep(1)
 	# 获取code
 	getcode()
-	if f_code == null:
-		print('{:=^80}'.format(str1)) 
-		print("请输入对应的\"数字\"指令选择机型进行刷机操作:")
-		print("1.Erofs机型:\n[红米K50(rubens) 红米K50Pro(matisse) 小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)]")
-		print("	") 
-		print("2.Vab机型：\n[小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)]")
-		print("	") 
-		print("3.OnlyA机型：\n[小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)]")
-		print('{:=^80}'.format(str1)) 
-
-		while True:
-			userchocie = int(input("请输入数字指令:\n"))
-			if userchocie <= 0 or userchocie > 3:
-				print("输入有误,请重新输入!")
-
-			else:
-				if userchocie == 1:
-					print("您选择了:%s，这是Erofs机型"%(userchocie))
-					erofs()
-					break
-				elif  userchocie == 2:
-					print("您选择了:%s，这是Vab机型"%(userchocie))
-					erofs()
-					# vab()  通用暂时留空吧
-					break
-				elif  userchocie == 3:
-					print("您选择了:%s，这是OnlyA机型"%(userchocie))
-					onlya()
-					# vab()  通用暂时留空吧
-					break
-				else:
-					os.system("cls")
-					print('程序异常，正在退出...')
-					time.sleep(3)
-					exit()
+	if f_code == "":
+		mainchoice()
 	else:
 		pass
-
-
-
 
 
 
