@@ -2,11 +2,12 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-10 23:53:18
+# @Last Modified time: 2022-05-11 11:01:39
 
 import os
 import time
 import shutil
+import re
 
 
 path = os.getcwd()
@@ -39,7 +40,63 @@ def binfinder():
 
 
 
-# 刷机方法调用
+# 识别机型代码 V4.0
+def getcode():
+	code = str(path)
+	re_code = re.search( r'_[a-z]{3,8}_', code, re.M)
+	if re_code:
+		f_code = re_code.group().replace("_","")
+		devicelist = {'matisse':'红米K50 Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
+		devicename = devicelist[f_code]
+		print(devicename)
+		alist = ["rubens","matisse","cupid","zeus","psyche","odin","mona"]
+		blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
+		clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
+		if f_code in alist:
+			print("当前识别到代号为:%s,机型为:%s,类型为:Erofs机型"%(f_code,devicename))
+			sure = input("识别是否准确?(Y/N):\n")
+			if sure == 'Y':
+				print("开始刷机...")
+				erofs()
+			elif sure == 'N':
+				print("已经取消...")
+				pass
+			else:
+				pass
+		elif f_code in blist:
+			print("当前识别到代号为:%s,机型为:%s,类型为:VAB机型"%(f_code,devicename))
+			sure = input("识别是否准确?(Y/N):\n")
+			if sure == 'Y':
+				print("开始刷机...")
+				erofs()
+			elif sure == 'N':
+				print("已经取消...")
+				pass
+			else:
+				pass
+		elif f_code in clist:
+			print("当前识别到代号为:%s,机型为:%s,类型为:OnlyA机型"%(f_code,devicename))
+			sure = input("识别是否准确?(Y/N):\n")
+			if sure == 'Y':
+				print("开始刷机...")
+				onlya()
+			elif sure == 'N':
+				print("已经取消...")
+				pass
+			else:
+				pass
+		else:
+			print("无法识别当前机型！")
+			pass
+
+	else:
+		print("未识别到机型,请手动选择")
+		time.sleep(1)
+		pass
+
+
+
+# 刷机工具环境
 def flash(filepath,imgfile):
 	os.chdir(ospath)
 	os.system("fastboot.exe flash" + " " + filepath + " " + imgfile)
@@ -56,16 +113,16 @@ def fixboot():
 			os.chdir(exe_path) # 目录切换到boot_sh脚本
 			shutil.copyfile(boot_patch, exe_path + "\\boot.img")
 			os.system("boot_patch.bat boot.img")
-			print("修补完成！")
+			print("开始修补！")
 			os.remove(exe_path + "\\boot.img")
 			os.remove(boot_patch)
 			shutil.copyfile(exe_path + "\\new-boot.img",boot_patch)
 			os.remove(exe_path + "\\new-boot.img")
-			print("替换原版boot完成！")
+			print("修补并替换原版boot完成,即将开始其他操作...")
 			break
 
 		elif dodo == "N":
-			print("您选择了取消修补boot,即将开始操作...")
+			print("您选择了取消修补boot,即将开始其他操作...")
 			time.sleep(1)
 			break
 		else:
@@ -250,40 +307,47 @@ def mainleader():
 	print("	")
 	print("	")
 	print("警告:此脚本仅适用于FiimeDXY,请勿刷写其他官改或官方线刷包!")
-	print('{:=^80}'.format(str1)) 
-	print("请输入对应的\"数字\"指令选择机型进行刷机操作:")
-	print("1.Erofs机型:\n[红米K50(rubens) 红米K50Pro(matisse) 小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)]")
-	print("	") 
-	print("2.Vab机型：\n[小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)]")
-	print("	") 
-	print("3.OnlyA机型：\n[小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)]")
-	print('{:=^80}'.format(str1)) 
+	print("正在识别机型...")
+	time.sleep(1)
+	# 获取code
+	getcode()
+	if f_code == null:
+		print('{:=^80}'.format(str1)) 
+		print("请输入对应的\"数字\"指令选择机型进行刷机操作:")
+		print("1.Erofs机型:\n[红米K50(rubens) 红米K50Pro(matisse) 小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)]")
+		print("	") 
+		print("2.Vab机型：\n[小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)]")
+		print("	") 
+		print("3.OnlyA机型：\n[小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)]")
+		print('{:=^80}'.format(str1)) 
 
-	while True:
-		userchocie = int(input("请输入数字指令:\n"))
-		if userchocie <= 0 or userchocie > 3:
-			print("输入有误,请重新输入!")
+		while True:
+			userchocie = int(input("请输入数字指令:\n"))
+			if userchocie <= 0 or userchocie > 3:
+				print("输入有误,请重新输入!")
 
-		else:
-			if userchocie == 1:
-				print("您选择了:%s，这是Erofs机型"%(userchocie))
-				erofs()
-				break
-			elif  userchocie == 2:
-				print("您选择了:%s，这是Vab机型"%(userchocie))
-				erofs()
-				# vab()  通用暂时留空吧
-				break
-			elif  userchocie == 3:
-				print("您选择了:%s，这是OnlyA机型"%(userchocie))
-				onlya()
-				# vab()  通用暂时留空吧
-				break
 			else:
-				os.system("cls")
-				print('程序异常，正在退出...')
-				time.sleep(3)
-				exit()
+				if userchocie == 1:
+					print("您选择了:%s，这是Erofs机型"%(userchocie))
+					erofs()
+					break
+				elif  userchocie == 2:
+					print("您选择了:%s，这是Vab机型"%(userchocie))
+					erofs()
+					# vab()  通用暂时留空吧
+					break
+				elif  userchocie == 3:
+					print("您选择了:%s，这是OnlyA机型"%(userchocie))
+					onlya()
+					# vab()  通用暂时留空吧
+					break
+				else:
+					os.system("cls")
+					print('程序异常，正在退出...')
+					time.sleep(3)
+					exit()
+	else:
+		pass
 
 
 
@@ -293,9 +357,11 @@ def mainleader():
 
 
 
-# 检测工作环境		
-binfinder()
-time.sleep(2)
-os.system("cls")
-# 主要引导程序
-mainleader()
+# # 检测工作环境		
+# binfinder()
+# time.sleep(2)
+# os.system("cls")
+# # 主要引导程序
+# mainleader()
+
+getcode()
