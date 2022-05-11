@@ -48,7 +48,6 @@ def getcode():
 		f_code = re_code.group().replace("_","")
 		devicelist = {'matisse':'红米K50 Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
 		devicename = devicelist[f_code]
-		print(devicename)
 		alist = ["rubens","matisse","cupid","zeus","psyche","odin","mona"]
 		blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
 		clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
@@ -297,7 +296,7 @@ def erofs():
 def mainleader():
 	str1= "===="
 	title = "欢迎使用FiimeFlash刷机脚本工具(作者:奥奥)"
-	version = "Version:3.0.0"
+	version = "Version:4.1.0"
 	web = "官网: https://mi.fiime.cn   技术支持:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))
