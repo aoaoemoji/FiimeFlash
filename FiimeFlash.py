@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-11 11:01:39
+# @Last Modified time: 2022-05-11 11:04:35
 
 import os
 import time
@@ -357,11 +357,9 @@ def mainleader():
 
 
 
-# # 检测工作环境		
-# binfinder()
-# time.sleep(2)
-# os.system("cls")
-# # 主要引导程序
-# mainleader()
-
-getcode()
+# 检测工作环境		
+binfinder()
+time.sleep(2)
+os.system("cls")
+# 主要引导程序
+mainleader()
