@@ -2,22 +2,32 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-11 11:47:36
+# @Last Modified time: 2022-05-14 12:35:28
 
 import os
 import time
 import shutil
 import re
+import ctypes
+import locale
+
+
+"""
+5.0.0版本
+--新增中英文识别切换
+--新增lib目录检查
+"""
 
 
 path = os.getcwd()
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
+libpath = path + "\\lib\\"
 boot_patch = path + "\\images\\boot.img"
 exe_path = path + '\\lib'
 
 
-print("当前目录为:%s"%(path))
+
 # 检测程序目录是否完整 V2.0版本
 def binfinder():
 	print("正在检测工作目录...")
@@ -32,12 +42,39 @@ def binfinder():
 		time.sleep(3)
 		os.system("cls")
 		exit()
+	elif os.path.exists(libpath) != True :
+		print("当前目录不包含libs文件夹(组件库),请检查本工具所在路径是否在解压后的同级目录!")
+		time.sleep(3)
+		os.system("cls")
+		exit()
 	else:
 		print("当前工作环境完整，检测通过!")
 		time.sleep(2)
 		os.system("cls")
 		pass
-
+def binfinder_en():
+	print("Checking APP directory...")
+	time.sleep(3)
+	if os.path.exists(ospath) != True :
+		print("The \"DXY\" folder does not exist, Please check!")
+		time.sleep(3)
+		os.system("cls")
+		exit()
+	elif os.path.exists(imgpath) != True :
+		print("The \"images\" folder does not exist, Please check!")
+		time.sleep(3)
+		os.system("cls")
+		exit()
+	elif os.path.exists(libpath) != True :
+		print("The \"lib\" folder does not exist, Please check!")
+		time.sleep(3)
+		os.system("cls")
+		exit()
+	else:
+		print("PATH is Okay，PASS!")
+		time.sleep(2)
+		os.system("cls")
+		pass
 
 
 
@@ -105,7 +142,69 @@ def getcode():
 		print("未识别到机型,请手动选择")
 		time.sleep(1)
 		pass
+def getcode_en():
+	global f_code
+	code = str(path)
+	re_miuiversion = re.search( r'(V[0-9.EDV]{10,40}|[0-9]{2}[0-9.]{2,3}[0-9]{1,2})', code, re.M)
+	re_code = re.search( r'_[a-z]{3,8}_', code, re.M)
+	if re_miuiversion:
+		miuiversion = re_miuiversion.group()
+	else:
+		miuiversion = "Miui version can not be recognized"
+	if re_code:
+		f_code = re_code.group().replace("_","")
+		devicelist = {'matisse':'RedmiK50 Pro','rubens':'RedmiK50','munch':'RedmiK40S','zeus':'Xiaomi12 Pro','cupid':'Xiaomi12','psyche':'Xiaomi12X','mona':'XiaomiCIVI','elish':'Xiaomi stable 5 Pro (WiFi)','odin':'XiaomiMIX4','renoir':'Xiaomi11 Young','star':'Xiaomi11 Pro / Ultra','thyme':'Xiaomi10S','haydn':'RedmiK40Pro/Pro+/Xiaomi11i','alioth':'RedmiK40 / POCO F3','venus':'Xiaomi11','apollo':'RedmiK30S Plus/Xiaomi10T/10T','cas':'Xiaomi10Uitra','vangogh':'Xiaomi10Young','lmi':'RedmiK30 Pro/POCO F2 Pro','cmi':'Xiaomi10Pro','umi':'Xiaomi10','picasso':'RedmiK30 5G/RedmiK30i 5G'}
+		devicename = devicelist[f_code]
+		alist = ["rubens","matisse","cupid","zeus","psyche","odin","mona"]
+		blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
+		clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
+		if f_code in alist:
+			print("-------------------------------------------------------------------------------------- ")
+			print("Currently identified as:%s,Phone:%s,Type:Erofs,MIUI:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
+			sure = input("Whether the identification is accurate?(Y/N):\n")
+			if sure == 'Y':
+				print("Begin to flash...")
+				erofs()
+			elif sure == 'N':
+				print("Cancelled...")
+				mainchoice()
+			else:
+				pass
+		elif f_code in blist:
+			print("-------------------------------------------------------------------------------------- ")
+			print("Currently identified as:%s,Phone:%s,Type:VAB,MIUI:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
+			sure = input("Whether the identification is accurate?(Y/N):\n")
+			if sure == 'Y':
+				print("Begin to flash...")
+				erofs()
+			elif sure == 'N':
+				print("Cancelled...")
+				mainchoice()
+			else:
+				pass
+		elif f_code in clist:
+			print("-------------------------------------------------------------------------------------- ")
+			print("Currently identified as:%s,Phone:%s,Type:OnlyA,MIUI:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
+			sure = input("Whether the identification is accurate?(Y/N):\n")
+			if sure == 'Y':
+				print("Begin to flash...")
+				onlya()
+			elif sure == 'N':
+				print("Cancelled...")
+				mainchoice()
+			else:
+				pass
+		else:
+			print("Unable to identify the current models!")
+			pass
 
+	else:
+		print("Model not recognized, please select manually")
+		time.sleep(1)
+		pass
 
 
 # 刷机工具环境
@@ -139,6 +238,28 @@ def fixboot():
 			break
 		else:
 			print("输入错误，请重新输入!")
+			break
+def fixboot_en():
+	while True:
+		dodo = input("Need Fix boot.img with MagiskPath?(Y/N):"+"\n")
+		if dodo == "Y":
+			os.chdir(exe_path) # 目录切换到boot_sh脚本
+			shutil.copyfile(boot_patch, exe_path + "\\boot.img")
+			os.system("boot_patch.bat boot.img")
+			print("Ahhh... start！")
+			os.remove(exe_path + "\\boot.img")
+			os.remove(boot_patch)
+			shutil.copyfile(exe_path + "\\new-boot.img",boot_patch)
+			os.remove(exe_path + "\\new-boot.img")
+			print("Fixed and replace done ,well do another...")
+			break
+
+		elif dodo == "N":
+			print("Cancel Fix boot,well do another...")
+			time.sleep(1)
+			break
+		else:
+			print("You may have made a big mistake, the size of the earth，Please Re-enter!")
 			break
 
 
@@ -226,6 +347,86 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 			break
 		else:
 			print("输入有误，重新输入！")
+def onlya_en(): # 新增onlya刷机方案 3.0版本
+	fixboot_en()
+	while True:
+		wipeuser = input("Wipe userdata(Y/N):\n")
+		if wipeuser == "Y":
+			print("Erasing userdata...")
+			os.chdir(ospath)
+			os.system("fastboot erase metadata")
+			os.system("fastboot erase userdata")
+			break
+		elif  wipeuser == "N":
+			print("Cancel Wipe userdata！")
+			break
+		else:
+			print("Error in input, Please re-enter!")
+	while True:
+		wipedata = input("Wipe DATA Partition(Y/N),Sometimes it may not Boot if it is not wiped.:\n")
+		if wipedata == "Y":
+			print("Wipe DATA Partition...")
+			os.chdir(ospath)
+			os.system("fastboot -w")
+			break
+		elif  wipedata == "N":
+			print("Cancel Wipe DATA Partition!")
+			break
+		else:
+			print("Error in input, Please re-enter!")
+	while True:
+		sureflash =  input("Sure to Flash(Y/N):\n")
+		if sureflash == "Y":
+			print("Okay，I'm doing...")
+			time.sleep(2)
+			os.system("cls")
+			filelist = os.listdir(imgpath)                                
+			print("Gets the following image files:\n%s"%(filelist))
+			print("Wait 3s and will start...")
+			time.sleep(3)
+			# 添加一个防止小白的功能 V3.0版本
+			errorimg_list = ['system.img','vendor.img','product.img','odm.img','system_ext.img']
+			for image_id in filelist:
+				position=imgpath+"\\"+image_id # 镜像文件
+				aa=image_id.replace('.img','') # 分区名字
+				if image_id in errorimg_list:
+					print("Please Check images folder，There are currently disallowed img file:%s found!"%(image_id))
+					time.sleep(3)
+					exit()
+				else:
+					if image_id =="NON-HLOS.img":
+						os.rename(image_id, "modem.img")
+					elif image_id =="uefi_sec.img":
+						os.rename(image_id, "uefisecapp.img")
+					elif image_id =="qupv3fw.img":
+						os.rename(image_id, "qupfw.img")
+					elif image_id =="km4.img":
+						os.rename(image_id, "keymaster.img")
+					elif image_id =="dspso.img":
+						os.rename(image_id, "dsp.img")
+					elif image_id =="BTFM.img":
+						os.rename(image_id, "bluetooth.img")
+					else :
+						print("Miao~")
+			for imgxxx in filelist:
+				kkpath=imgpath+"\\"+imgxxx # 镜像文件
+				bb=imgxxx.replace('.img','') # 分区名字
+				flash(bb,kkpath)
+			# 重启设备 
+			print("Well Bro you are luck! I'm reboot now...")
+			time.sleep(3)
+			flashsingle("reboot")
+			print("Work Done! After 30s and Autoexit！")
+			time.sleep(30)
+			break
+		elif sureflash == "N":
+			print("Cancel Flash,i'm planning to escape the earth...Bye,Bro!")
+			time.sleep(3)
+			os.system("cls")
+			exit()
+			break
+		else:
+			print("Error in input, Please re-enter!")
 
 
 # 开始菜单 V4.1
@@ -332,6 +533,112 @@ def erofs():
 			break
 		else:
 			print("输入有误，重新输入！")
+def mainchoice_en():
+	print('{:=^80}'.format(str1)) 
+	print("Please input the Number to select the Flash Plan:")
+	print("1.Erofs:\n[RedmiK50(rubens) RedmiK50Pro(matisse) Xiaomi12(cupid) Xiaomi12Pro(zeus)\nXiaomi12X(psyche) XiaomiMIX4(odin) XiaomiCIVI(mona)]")
+	print("	") 
+	print("2.Vab：\n[XiaomiTablet5ProWifi(elish) Xiaomi11Pro(star) Xiaomi11(venus) Xiaomi11Young(renoir)\nXiaomi10S(thyme) RedmiK40(alioth) RedmiK40Pro(haydn) RedmiK40S(munch)]")
+	print("	") 
+	print("3.OnlyA：\n[Xiaomi10(umi) Xiaomi10Pro(cmi) Xiaomi10Uitra(cas) Xiaomi10Young(vangogh)\nRedmiK30Pro(lmi) RedmiK30i-5G(picasso) RedmiK30S Plus(apollo)]")
+	print('{:=^80}'.format(str1)) 
+
+	while True:
+		userchocie = str(input("Enter Number:\n"))
+		if userchocie == "1":
+			print("You choice:%s，This is Erofs Plan"%(userchocie))
+			erofs_en()
+			break
+		elif  userchocie == "2":
+			print("You choice:%s，This is Vab Plan"%(userchocie))
+			erofs_en()
+			# vab()  通用暂时留空吧
+			break
+		elif  userchocie == "3":
+			print("You choice:%s，This is OnlyA Plan"%(userchocie))
+			onlya_en()
+			# vab()  通用暂时留空吧
+			break
+		else:
+			os.system("cls")
+			print("Error in input, Please re-enter!")
+			time.sleep(1)
+def erofs_en():
+	fixboot_en()
+	while True:
+		wipeuser = input("Wipe userdata(Y/N):\n")
+		if wipeuser == "Y":
+			print("Erasing userdata...")
+			os.chdir(ospath)
+			os.system("fastboot erase metadata")
+			os.system("fastboot erase userdata")
+			break
+		elif  wipeuser == "N":
+			print("Cancel Wipe userdata！")
+			break
+		else:
+			print("Error in input, Please re-enter!")
+	while True:
+		wipedata = input("Wipe DATA Partition(Y/N),Sometimes it may not Boot if it is not wiped.:\n")
+		if wipedata == "Y":
+			print("Wipe DATA Partition...")
+			os.chdir(ospath)
+			os.system("fastboot -w")
+			break
+		elif  wipedata == "N":
+			print("Cancel Wipe DATA Partition!")
+			break
+		else:
+			print("Error in input, Please re-enter!")
+	while True:
+		sureflash =  input("Sure to Flash(Y/N):\n")
+		if sureflash == "Y":
+			print("I'm Working emmmm...")
+			time.sleep(2)
+			os.system("cls")
+			filelist = os.listdir(imgpath)                                
+			print("Gets the following image files:\n%s"%(filelist))
+			print("Wait 3s and will start...")
+			time.sleep(3)
+			# 添加一个防止小白的功能 V3.0版本
+			errorimg_list = ['system.img','vendor.img','product.img','odm.img','system_ext.img']
+			for image_id in filelist:
+				position=imgpath+"\\"+image_id # 镜像文件
+				aa=image_id.replace('.img','') # 分区名字
+				if image_id in errorimg_list:
+					print("Please Check images folder，There are currently disallowed img file:%s found!"%(image_id))
+					time.sleep(3)
+					exit()
+				else:
+					if aa == "vendor_dlkm":
+						flashsingle("reboot fastboot")
+						flashsingle("create-logical-partition vendor_dlkm_a")
+						flashsingle("create-logical-partition vendor_dlkm_b 0")
+						flash("vendor_dlkm_a",position)
+					elif aa == "super":
+						flash(aa,position)
+					else:
+						flash(aa+"_ab",position)
+			# 设置活动分区
+			flashsingle("set_active a")
+			# 重启设备 
+			print("Well Bro you are luck! I'm reboot now...")
+			time.sleep(3)
+			flashsingle("reboot")
+			print("Work Done! After 30s and Autoexit！")
+			time.sleep(30)
+			break
+		elif sureflash == "N":
+			print("Cancel Flash,i'm planning to escape the earth...Bye,Bro!")
+			time.sleep(3)
+			os.system("cls")
+			exit()
+			break
+		else:
+			print("Error in input, Please re-enter!")
+
+
+
 
 
 # 程序引导入口
@@ -339,7 +646,7 @@ def mainleader():
 	global str1
 	str1= "===="
 	title = "欢迎使用FiimeFlash刷机脚本工具(作者:奥奥)"
-	version = "Version:4.1.0"
+	version = "Version:5.0.0"
 	web = "官网: https://mi.fiime.cn   技术支持:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))
@@ -357,15 +664,62 @@ def mainleader():
 		mainchoice()
 	else:
 		pass
+def mainleader_en():
+	global str1
+	str1= "===="
+	title = "Welcome to use FiimeFlash(By:Jamine)"
+	version = "Version:5.0.0"
+	web = "Website: https://mi.fiime.cn   Support:DXY"
+	print('{:=^80}'.format(str1)) 
+	print('{: ^70}'.format(title))
+	print('{: ^80}'.format(version))
+	print("	")
+	print('{: ^80}'.format(web))
+	print("	")
+	print("	")
+	print("Warning: this script is only applicable to FiimeDXY, do not flash other officer or others package instead")
+	print("Identifying model...")
+	time.sleep(1)
+	# 获取code
+	getcode_en()
+	if f_code == "":
+		mainchoice_en()
+	else:
+		pass
 
 
 
 
+# V4.3增加语言检测
+dll_handle = ctypes.windll.kernel32
+sys_lang = hex(dll_handle.GetSystemDefaultUILanguage())
+if sys_lang == "0x804":
+	lang_get="中文(CN)"
+	print("当前目录为:%s"%(path))
+	print("当前语言(language):%s"%(lang_get))
+	# 检测工作环境		
+	binfinder()
+	time.sleep(2)
+	os.system("cls")
+	# 主要引导程序
+	mainleader()
+elif sys_lang == "0x409":
+	lang_get="English(EN)"
+	print("ROMPath:%s"%(path))
+	print("Your language:%s"%(lang_get))
+	# 检测工作环境		
+	binfinder_en()
+	time.sleep(2)
+	os.system("cls")
+	# 主要引导程序
+	mainleader_en()
+else:
+	print('无法获取您的计算机语言设置\ncan\'t get your language')
+	print("当前目录为:%s"%(path))
+	# 检测工作环境		
+	binfinder()
+	time.sleep(2)
+	os.system("cls")
+	# 主要引导程序
+	mainleader()
 
-
-# 检测工作环境		
-binfinder()
-time.sleep(2)
-os.system("cls")
-# 主要引导程序
-mainleader()
