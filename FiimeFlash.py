@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-14 12:35:28
+# @Last Modified time: 2022-05-14 22:04:29
 
 import os
 import time
@@ -165,10 +165,10 @@ def getcode_en():
 			sure = input("Whether the identification is accurate?(Y/N):\n")
 			if sure == 'Y':
 				print("Begin to flash...")
-				erofs()
+				erofs_en()
 			elif sure == 'N':
 				print("Cancelled...")
-				mainchoice()
+				mainchoice_en()
 			else:
 				pass
 		elif f_code in blist:
@@ -178,10 +178,10 @@ def getcode_en():
 			sure = input("Whether the identification is accurate?(Y/N):\n")
 			if sure == 'Y':
 				print("Begin to flash...")
-				erofs()
+				erofs_en()
 			elif sure == 'N':
 				print("Cancelled...")
-				mainchoice()
+				mainchoice_en()
 			else:
 				pass
 		elif f_code in clist:
@@ -191,10 +191,10 @@ def getcode_en():
 			sure = input("Whether the identification is accurate?(Y/N):\n")
 			if sure == 'Y':
 				print("Begin to flash...")
-				onlya()
+				onlya_en()
 			elif sure == 'N':
 				print("Cancelled...")
-				mainchoice()
+				mainchoice_en()
 			else:
 				pass
 		else:
