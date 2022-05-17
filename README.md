@@ -22,5 +22,6 @@ FiimeFlash线刷工具
 **支持自动识别机型和MIUI版本**
 **支持修补boot.img**
 **支持中英文自动切换**
+**支持打包卡刷包**
 
 感谢aff大佬项目magiskpatcher支持
