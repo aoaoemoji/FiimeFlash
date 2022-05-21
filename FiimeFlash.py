@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-17 20:49:16
+# @Last Modified time: 2022-05-21 15:21:49
 
 import os
 import time
@@ -315,11 +315,11 @@ def getbinary_en():
 # 刷机工具环境
 def flash(filepath,imgfile):
 	os.chdir(ospath)
-	os.system("fastboot.exe flash" + " " + filepath + " " + imgfile)
+	os.system(exe_path + "//fastboot.exe flash" + " " + filepath + " " + imgfile)
 
 def flashsingle(order):
 	os.chdir(ospath)
-	os.system("fastboot.exe "+ " " + order)
+	os.system(exe_path + "//fastboot.exe "+ " " + order)
 
 # 检测程序目录是否完整 V2.0版本
 def binfinder():
@@ -1194,7 +1194,7 @@ def mainleader():
 	global str1
 	str1= "===="
 	title = "欢迎使用FiimeFlash刷机脚本工具(作者:奥奥)"
-	version = "Version:5.4.0"
+	version = "Version:5.5.0"
 	web = "官网: https://mi.fiime.cn   技术支持:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))
@@ -1216,7 +1216,7 @@ def mainleader_en():
 	global str1
 	str1= "===="
 	title = "Welcome to use FiimeFlash(By:Jamine)"
-	version = "Version:5.4.0"
+	version = "Version:5.5.0"
 	web = "Website: https://mi.fiime.cn   Support:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))
