@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-21 15:21:49
+# @Last Modified time: 2022-05-21 15:35:59
 
 import os
 import time
@@ -30,6 +30,19 @@ exe_path = path + '\\lib'
 emmmmzip = str(path)
 zipname = re.search( r'(DXY|Fiime).{0,100}', emmmmzip, re.M)
 zipname = zipname.group()+".zip"
+
+
+
+
+
+# 刷机工具环境
+def flash(filepath,imgfile):
+	os.chdir(ospath)
+	os.system(ospath + "\\fastboot.exe flash" + " " + filepath + " " + imgfile)
+
+def flashsingle(order):
+	os.chdir(ospath)
+	os.system(ospath + "\\fastboot.exe "+ " " + order)
 
 
 # 打包卡刷包功能函数v5.4.0
@@ -312,14 +325,6 @@ def getbinary_en():
 			time.sleep(3)
 			exit()
 
-# 刷机工具环境
-def flash(filepath,imgfile):
-	os.chdir(ospath)
-	os.system(exe_path + "//fastboot.exe flash" + " " + filepath + " " + imgfile)
-
-def flashsingle(order):
-	os.chdir(ospath)
-	os.system(exe_path + "//fastboot.exe "+ " " + order)
 
 # 检测程序目录是否完整 V2.0版本
 def binfinder():
