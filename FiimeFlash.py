@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-21 15:35:59
+# @Last Modified time: 2022-05-22 22:39:44
 
 import os
 import time
@@ -18,21 +18,49 @@ from os.path import isfile, isdir, join
 5.0.0版本
 --新增中英文识别切换
 --新增lib目录检查
+5.5.7版本
+--新增安装小米刷机驱动
+--修复无法获取zip卡刷包文件名BUG
 """
 
-
+updatakey = "V5.5.7"
 path = os.getcwd()
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
 libpath = path + "\\lib\\"
+# boot的路径
 boot_patch = path + "\\images\\boot.img"
 exe_path = path + '\\lib'
+# 驱动路径
+driver = path + "\\lib\\driver\\"
 emmmmzip = str(path)
+# 卡刷包命名获取 V5.5.6
 zipname = re.search( r'(DXY|Fiime).{0,100}', emmmmzip, re.M)
-zipname = zipname.group()+".zip"
+if zipname:
+	zipname = zipname.group()+".zip"
 
 
 
+# V5.5.7 安装小米刷机驱动
+def bit():
+	if ('PROGRAMFILES(X86)' in os.environ) == True:
+		print("当前系统为:64位")
+		print("开始安装小米刷机驱动...")
+		os.system(driver + 'DPInst64.exe')
+	else:
+		print("当前系统为:32位")
+		print("开始安装小米刷机驱动...")
+		os.system(driver + 'DPInst32.exe')
+
+def bit_en():
+	if ('PROGRAMFILES(X86)' in os.environ) == True:
+		print("The current system is:64Bit")
+		print("Start installing the Mi Flash driver...")
+		os.system(driver + 'DPInst64.exe')
+	else:
+		print("The current system is:32Bit")
+		print("Start installing the Mi Flash driver...")
+		os.system(driver + 'DPInst32.exe')
 
 
 # 刷机工具环境
@@ -766,15 +794,19 @@ def onlya_en(): # 新增onlya刷机方案 3.0版本
 def mainchoice():
 	print('{:=^80}'.format(str1)) 
 	print("请输入对应的\"数字\"指令选择机型进行刷机操作:")
-	print("1.Erofs机型:\n[小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)]")
+	print("1.Erofs机型:\n小米12(cupid) 小米12Pro(zeus)\n小米12X(psyche) 小米MIX4(odin) 小米CIVI(mona)")
 	print("	") 
-	print("2.Vab机型：\n[小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)]")
+	print("2.Vab机型：\n小米平板5ProWifi(elish) 小米11Pro(star) 小米11(venus) 小米11青春版(renoir)\n小米10S(thyme) 红米K40(alioth) 红米K40Pro(haydn) 红米K40S(munch)")
 	print("	") 
-	print("3.OnlyA机型：\n[小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)]")
+	print("3.OnlyA机型：\n小米10(umi) 小米10Pro(cmi) 小米10Uitra(cas) 小米10青春版(vangogh)\n红米K30Pro(lmi) 红米K30i-5G(picasso) 红米K30S 至尊纪念版(apollo)")
 	print("	")
-	print("4.Erofs_MTK机型:\n[红米K50(rubens) 红米K50Pro(matisse)]")
+	print("4.Erofs_MTK机型:\n红米K50(rubens) 红米K50Pro(matisse)")
 	print("	")
 	print("5.打包成卡刷包(测试)")
+	print("	")
+	print("6.安装小米刷机驱动")
+	print("	")
+	print("0.退出程序")
 	print("	")
 	print('需注意：文件夹名称请以解压的7z压缩包文件名为准，否则识别不到机型！')
 	print('{:=^80}'.format(str1)) 
@@ -821,6 +853,12 @@ def mainchoice():
 			print("30s后结束程序！")
 			time.sleep(30)
 			break
+		elif  userchocie == "6":
+			bit()
+		elif  userchocie == "0":
+			print("30秒后自动退出！")
+			time.sleep(3)
+			exit()
 		else:
 			os.system("cls")
 			print("输入有误,请重新输入!")
@@ -981,16 +1019,20 @@ def erofs_mtk():
 def mainchoice_en():
 	print('{:=^80}'.format(str1)) 
 	print("Please input the Number to select the Flash Plan:")
-	print("1.Erofs:\n[Xiaomi12(cupid) Xiaomi12Pro(zeus)\nXiaomi12X(psyche) XiaomiMIX4(odin) XiaomiCIVI(mona)]")
+	print("1.Erofs:\nXiaomi12(cupid) Xiaomi12Pro(zeus)\nXiaomi12X(psyche) XiaomiMIX4(odin) XiaomiCIVI(mona)")
 	print("	") 
-	print("2.Vab：\n[XiaomiTablet5ProWifi(elish) Xiaomi11Pro(star) Xiaomi11(venus) Xiaomi11Young(renoir)\nXiaomi10S(thyme) RedmiK40(alioth) RedmiK40Pro(haydn) RedmiK40S(munch)]")
+	print("2.Vab：\nXiaomiTablet5ProWifi(elish) Xiaomi11Pro(star) Xiaomi11(venus) Xiaomi11Young(renoir)\nXiaomi10S(thyme) RedmiK40(alioth) RedmiK40Pro(haydn) RedmiK40S(munch)")
 	print("	") 
-	print("3.OnlyA：\n[Xiaomi10(umi) Xiaomi10Pro(cmi) Xiaomi10Uitra(cas) Xiaomi10Young(vangogh)\nRedmiK30Pro(lmi) RedmiK30i-5G(picasso) RedmiK30S Plus(apollo)]")
+	print("3.OnlyA：\nXiaomi10(umi) Xiaomi10Pro(cmi) Xiaomi10Uitra(cas) Xiaomi10Young(vangogh)\nRedmiK30Pro(lmi) RedmiK30i-5G(picasso) RedmiK30S Plus(apollo)")
 	print("	")
-	print("4.Erofs_MTK:\n[RedmiK50(rubens) RedmiK50Pro(matisse)]")
+	print("4.Erofs_MTK:\nRedmiK50(rubens) RedmiK50Pro(matisse)")
 	print("	")
 	print("5.Switching Zip (test)")
 	print("	")
+	print("6.Install the Flash driver")
+	print("	")
+	print("0.Exit")
+	print(" ")
 	print('Note: The folder name to extract the 7Z package file name as the standard, otherwise not recognized to the model！')
 	print('{:=^80}'.format(str1)) 
 
@@ -1034,6 +1076,12 @@ def mainchoice_en():
 			print("Package is complete, please put into the device to perform the Flash!")
 			time.sleep(30)
 			break
+		elif  userchocie == "6":
+			bit_en()
+		elif  userchocie == "0":
+			print("You choice Exit after 3s...")
+			time.sleep(3)
+			exit()
 		else:
 			os.system("cls")
 			print("Error in input, Please re-enter!")
@@ -1199,7 +1247,7 @@ def mainleader():
 	global str1
 	str1= "===="
 	title = "欢迎使用FiimeFlash刷机脚本工具(作者:奥奥)"
-	version = "Version:5.5.0"
+	version = "Version:" + updatakey
 	web = "官网: https://mi.fiime.cn   技术支持:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))
@@ -1221,7 +1269,7 @@ def mainleader_en():
 	global str1
 	str1= "===="
 	title = "Welcome to use FiimeFlash(By:Jamine)"
-	version = "Version:5.5.0"
+	version = "Version:" + updatakey
 	web = "Website: https://mi.fiime.cn   Support:DXY"
 	print('{:=^80}'.format(str1)) 
 	print('{: ^70}'.format(title))

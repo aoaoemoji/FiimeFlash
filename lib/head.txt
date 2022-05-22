@@ -1,0 +1,53 @@
+#!/sbin/sh
+
+OUTFD=/proc/self/fd/$2
+ZIPFILE="$3"
+
+ui_print() {
+  echo -e "ui_print $1\nui_print" >>$OUTFD
+}
+
+package_extract_file() {
+  ui_print " - 正在刷入 $(echo $1 | awk -F "/" '{print $NF}') 至 $(echo $2 | awk -F "/" '{print $NF}') 分区"
+  unzip -p "$ZIPFILE" $1 >$2
+}
+
+keyListener() {
+  ui_print "按下 [音量+] 选择 是，按下 [音量-] 选择 否"
+  ui_print ""
+  keyListener_2
+}
+
+keyListener_2() {
+  getevent -qlc 1 2>&1 | grep VOLUME | grep " DOWN" >/tmp/events
+  if $(grep -q "VOLUMEUP" /tmp/events); then
+    ui_print " - 正在执行中，请稍后......"
+    return 0
+  elif $(grep -q "VOLUMEDOWN" /tmp/events); then
+    ui_print " - 正在执行中，请稍后......"
+    return 1
+  else
+    keyListener_2
+  fi
+}
+
+bin=/tmp/bin/android
+if [ -d $bin ]; then
+  rm -rf $bin
+fi
+mkdir -p $bin
+unzip "$ZIPFILE" bin/android/* -d /tmp
+chmod -R 0777 $bin
+
+ui_print " "
+ui_print " "
+ui_print "======================================"
+ui_print "FiimeDXY 纯净官改"
+ui_print "官网：https://mi.fiime.cn"
+ui_print "由FiimeFlash工具打包完成"
+ui_print "======================================"
+ui_print " "
+ui_print " "
+ui_print " "
+ui_print " "
+ui_print " "
