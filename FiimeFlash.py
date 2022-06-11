@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-05-22 22:39:44
+# @Last Modified time: 2022-06-11 17:18:38
 
 import os
 import time
@@ -21,9 +21,23 @@ from os.path import isfile, isdir, join
 5.5.7版本
 --新增安装小米刷机驱动
 --修复无法获取zip卡刷包文件名BUG
+5.5.8版本
+--新增红米Note11T Pro机型刷机支持
+--新的脚本方案
+--修复部分识别问题
 """
 
-updatakey = "V5.5.7"
+"""
+刷机操作记录区域
+"""
+#初始化调用函数
+
+wipedataconfig = 0
+wipeuserconfig = 0 
+
+
+
+updatakey = "V5.5.8"
 path = os.getcwd()
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
@@ -67,10 +81,11 @@ def bit_en():
 def flash(filepath,imgfile):
 	os.chdir(ospath)
 	os.system(ospath + "\\fastboot.exe flash" + " " + filepath + " " + imgfile)
-
+	# print(ospath + "\\fastboot.exe flash" + " " + filepath + " " + imgfile)
 def flashsingle(order):
 	os.chdir(ospath)
 	os.system(ospath + "\\fastboot.exe "+ " " + order)
+	# print(ospath + "\\fastboot.exe "+ " " + order)
 
 
 # 打包卡刷包功能函数v5.4.0
@@ -112,12 +127,13 @@ def getbinary():
 	code = str(path)
 	re_code = re.search( r'_[a-z]{3,8}_', code, re.M)
 	f_code = re_code.group().replace("_","")
-	devicelist = {'matisse':'红米K50 Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
+	devicelist = {'matisse':'红米K50 Pro','xaga':'红米Note11T Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
 	devicename = devicelist[f_code]
 	alist = ["cupid","zeus","psyche","odin","mona"]
 	blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
 	clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
 	dlist = ['matisse','rubens']
+	elist = ['xaga']
 	if devicename == "":
 		print("文件夹名称请以解压的7z压缩包文件名为准，否则识别不到机型！")
 	else:
@@ -223,7 +239,13 @@ def getbinary():
 				for line in bb.readlines():
 					new.write(line)
 			shutil.copyfile(outbinary,intobinary)
-
+		elif f_code in elist:
+			print("Erofs_MTK_2机型")
+			filelist = os.listdir(imgpath)                                
+			print("当前获取以下镜像文件:\n%s"%(filelist))
+			print("当前机型暂时不支持,即将退出!")
+			time.sleep(3)
+			exit()
 		else:
 			print("不支持的机型无法继续操作...")
 			time.sleep(3)
@@ -236,12 +258,13 @@ def getbinary_en():
 	code = str(path)
 	re_code = re.search( r'_[a-z]{3,8}_', code, re.M)
 	f_code = re_code.group().replace("_","")
-	devicelist = {'matisse':'RedmiK50 Pro','rubens':'RedmiK50','munch':'RedmiK40S','zeus':'Xiaomi12 Pro','cupid':'Xiaomi12','psyche':'Xiaomi12X','mona':'XiaomiCIVI','elish':'Xiaomi stable 5 Pro (WiFi)','odin':'XiaomiMIX4','renoir':'Xiaomi11 Young','star':'Xiaomi11 Pro / Ultra','thyme':'Xiaomi10S','haydn':'RedmiK40Pro/Pro+/Xiaomi11i','alioth':'RedmiK40 / POCO F3','venus':'Xiaomi11','apollo':'RedmiK30S Plus/Xiaomi10T/10T','cas':'Xiaomi10Uitra','vangogh':'Xiaomi10Young','lmi':'RedmiK30 Pro/POCO F2 Pro','cmi':'Xiaomi10Pro','umi':'Xiaomi10','picasso':'RedmiK30 5G/RedmiK30i 5G'}
+	devicelist = {'matisse':'RedmiK50 Pro','xaga':'RedmiNote11T Pro','rubens':'RedmiK50','munch':'RedmiK40S','zeus':'Xiaomi12 Pro','cupid':'Xiaomi12','psyche':'Xiaomi12X','mona':'XiaomiCIVI','elish':'Xiaomi stable 5 Pro (WiFi)','odin':'XiaomiMIX4','renoir':'Xiaomi11 Young','star':'Xiaomi11 Pro / Ultra','thyme':'Xiaomi10S','haydn':'RedmiK40Pro/Pro+/Xiaomi11i','alioth':'RedmiK40 / POCO F3','venus':'Xiaomi11','apollo':'RedmiK30S Plus/Xiaomi10T/10T','cas':'Xiaomi10Uitra','vangogh':'Xiaomi10Young','lmi':'RedmiK30 Pro/POCO F2 Pro','cmi':'Xiaomi10Pro','umi':'Xiaomi10','picasso':'RedmiK30 5G/RedmiK30i 5G'}
 	devicename = devicelist[f_code]
 	alist = ["cupid","zeus","psyche","odin","mona"]
 	blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
 	clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
 	dlist = ['matisse','rubens']
+	elist = ['xaga']
 	if devicename == "":
 		print("The folder name should be based on the file name of the decompressed 7z package, otherwise the model will not be identified!")
 	else:
@@ -347,7 +370,13 @@ def getbinary_en():
 				for line in bb.readlines():
 					new.write(line)
 			shutil.copyfile(outbinary,intobinary)
-
+		elif f_code in elist:
+			print("The current model is:%s,Erofs_MTK_2"%(devicename))
+			filelist = os.listdir(imgpath)                                
+			print("Currently get the following image files:\n%s"%(filelist))
+			print("Current model is not supported, will exit!")
+			time.sleep(3)
+			exit()
 		else:
 			print("Unsupported models can not continue to operate...")
 			time.sleep(3)
@@ -421,12 +450,13 @@ def getcode():
 		miuiversion = "无法识别MIUI版本"
 	if re_code:
 		f_code = re_code.group().replace("_","")
-		devicelist = {'matisse':'红米K50 Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
+		devicelist = {'matisse':'红米K50 Pro','xaga':'红米Note11T Pro','rubens':'红米K50','munch':'红米K40S','zeus':'小米12 Pro','cupid':'小米12','psyche':'小米12X','mona':'小米CIVI','elish':'小米平板5 Pro (WiFi)','odin':'小米MIX4','renoir':'小米11 青春版','star':'小米11 Pro / Ultra','thyme':'小米10S','haydn':'红米K40Pro/Pro+/小米11i','alioth':'红米K40 / POCO F3','venus':'小米11','apollo':'红米K30S 至尊纪念版/小米10T/10T','cas':'小米10Uitra','vangogh':'小米10青春版','lmi':'红米K30 Pro/变焦版/POCO F2 Pro','cmi':'小米10Pro','umi':'小米10','picasso':'红米K30 5G/红米K30i 5G'}
 		devicename = devicelist[f_code]
 		alist = ["cupid","zeus","psyche","odin","mona"]
 		blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
 		clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
 		dlist = ['matisse','rubens']
+		elist = ['xaga']
 		if f_code in alist:
 			print("-------------------------------------------------------------------------------------- ")
 			print("当前识别到代号为:%s,机型为:%s,类型为:Erofs机型,MIUI版本:%s"%(f_code,devicename,miuiversion))
@@ -483,6 +513,20 @@ def getcode():
 			else:
 				print("输入有误,启用手动选择菜单")
 				mainchoice()
+		elif f_code in elist:
+			print("-------------------------------------------------------------------------------------- ")
+			print("当前识别到代号为:%s,机型为:%s,类型为:Erofs_MTK_2机型,MIUI版本:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
+			sure = input("识别是否准确?(Y/N):\n")
+			if sure == 'Y':
+				print("开始刷机...")
+				erofs_mtk()
+			elif sure == 'N':
+				print("已经取消...")
+				mainchoice()
+			else:
+				print("输入有误,启用手动选择菜单")
+				mainchoice()
 		else:
 			print("无法识别当前机型,启用手动选择菜单！")
 			mainchoice()
@@ -502,12 +546,13 @@ def getcode_en():
 		miuiversion = "Miui version can not be recognized"
 	if re_code:
 		f_code = re_code.group().replace("_","")
-		devicelist = {'matisse':'RedmiK50 Pro','rubens':'RedmiK50','munch':'RedmiK40S','zeus':'Xiaomi12 Pro','cupid':'Xiaomi12','psyche':'Xiaomi12X','mona':'XiaomiCIVI','elish':'Xiaomi stable 5 Pro (WiFi)','odin':'XiaomiMIX4','renoir':'Xiaomi11 Young','star':'Xiaomi11 Pro / Ultra','thyme':'Xiaomi10S','haydn':'RedmiK40Pro/Pro+/Xiaomi11i','alioth':'RedmiK40 / POCO F3','venus':'Xiaomi11','apollo':'RedmiK30S Plus/Xiaomi10T/10T','cas':'Xiaomi10Uitra','vangogh':'Xiaomi10Young','lmi':'RedmiK30 Pro/POCO F2 Pro','cmi':'Xiaomi10Pro','umi':'Xiaomi10','picasso':'RedmiK30 5G/RedmiK30i 5G'}
+		devicelist = {'matisse':'RedmiK50 Pro','xaga':'RedmiNote11T Pro','rubens':'RedmiK50','munch':'RedmiK40S','zeus':'Xiaomi12 Pro','cupid':'Xiaomi12','psyche':'Xiaomi12X','mona':'XiaomiCIVI','elish':'Xiaomi stable 5 Pro (WiFi)','odin':'XiaomiMIX4','renoir':'Xiaomi11 Young','star':'Xiaomi11 Pro / Ultra','thyme':'Xiaomi10S','haydn':'RedmiK40Pro/Pro+/Xiaomi11i','alioth':'RedmiK40 / POCO F3','venus':'Xiaomi11','apollo':'RedmiK30S Plus/Xiaomi10T/10T','cas':'Xiaomi10Uitra','vangogh':'Xiaomi10Young','lmi':'RedmiK30 Pro/POCO F2 Pro','cmi':'Xiaomi10Pro','umi':'Xiaomi10','picasso':'RedmiK30 5G/RedmiK30i 5G'}
 		devicename = devicelist[f_code]
 		alist = ["cupid","zeus","psyche","odin","mona"]
 		blist = ['elish','star','venus','renoir','thyme','alioth','haydn','munch']
 		clist = ['umi','cmi','cas','vangogh','lmi','picasso','apollo']
 		dlist = ['matisse','rubens']
+		elist = ['xaga']
 		if f_code in alist:
 			print("-------------------------------------------------------------------------------------- ")
 			print("Currently identified as:%s,Phone:%s,Type:Erofs,MIUI:%s"%(f_code,devicename,miuiversion))
@@ -553,6 +598,20 @@ def getcode_en():
 		elif f_code in dlist:
 			print("-------------------------------------------------------------------------------------- ")
 			print("Currently identified as:%s,Phone:%s,Type:Erofs_MTK,MIUI:%s"%(f_code,devicename,miuiversion))
+			print("-------------------------------------------------------------------------------------- ")
+			sure = input("Whether the identification is accurate?(Y/N):\n")
+			if sure == 'Y':
+				print("Begin to flash...")
+				erofs_mtk_en()
+			elif sure == 'N':
+				print("Cancelled...")
+				mainchoice_en()
+			else:
+				print("Incorrect input. Enable Manual Menu Selection")
+				mainchoice_en()
+		elif f_code in elist:
+			print("-------------------------------------------------------------------------------------- ")
+			print("Currently identified as:%s,Phone:%s,Type:Erofs_MTK_2,MIUI:%s"%(f_code,devicename,miuiversion))
 			print("-------------------------------------------------------------------------------------- ")
 			sure = input("Whether the identification is accurate?(Y/N):\n")
 			if sure == 'Y':
@@ -627,14 +686,17 @@ def vab():
 	pass
 
 def onlya(): # 新增onlya刷机方案 3.0版本
+	global wipeuserconfig
+	global wipedataconfig
 	fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
-			print("清除双清用户数据")
-			os.chdir(ospath)
-			flashsingle("erase metadata")
-			flashsingle("erase userdata")
+			# print("清除双清用户数据")
+			# os.chdir(ospath)
+			# flashsingle("erase metadata")
+			# flashsingle("erase userdata")
+			wipeuserconfig = 1 
 			break
 		elif  wipeuser == "N":
 			print("取消双清用户数据")
@@ -644,9 +706,10 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 	while True:
 		wipedata = input("是否清除DATA分区(Y/N),某些时候不清除可能卡开机:\n")
 		if wipedata == "Y":
-			print("清除DATA分区")
-			os.chdir(ospath)
-			flashsingle("-w")
+			wipedataconfig = 1
+			# print("清除DATA分区")
+			# os.chdir(ospath)
+			# flashsingle("-w")
 			break
 		elif  wipedata == "N":
 			print("取消清除DATA分区")
@@ -691,6 +754,15 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 				kkpath=imgpath+"\\"+imgxxx # 镜像文件
 				bb=imgxxx.replace('.img','') # 分区名字
 				flash(bb,kkpath)
+			if wipeuserconfig == 1:
+				print("清除双清用户数据")
+				os.chdir(ospath)
+				flashsingle("erase metadata")
+				flashsingle("erase userdata")
+			if wipedataconfig == 1:
+				print("清除DATA分区")
+				os.chdir(ospath)
+				flashsingle("-w")
 			# 重启设备 
 			print("刷机完成!即将重启设备...")
 			time.sleep(3)
@@ -708,14 +780,17 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 		else:
 			print("输入有误，重新输入！")
 def onlya_en(): # 新增onlya刷机方案 3.0版本
+	global wipeuserconfig
+	global wipedataconfig
 	fixboot_en()
 	while True:
 		wipeuser = input("Wipe userdata(Y/N):\n")
 		if wipeuser == "Y":
-			print("Erasing userdata...")
-			os.chdir(ospath)
-			flashsingle("erase metadata")
-			flashsingle("erase userdata")
+			wipeuserconfig = 1
+			# print("Erasing userdata...")
+			# os.chdir(ospath)
+			# flashsingle("erase metadata")
+			# flashsingle("erase userdata")
 			break
 		elif  wipeuser == "N":
 			print("Cancel Wipe userdata！")
@@ -725,9 +800,10 @@ def onlya_en(): # 新增onlya刷机方案 3.0版本
 	while True:
 		wipedata = input("Wipe DATA Partition(Y/N),Sometimes it may not Boot if it is not wiped.:\n")
 		if wipedata == "Y":
-			print("Wipe DATA Partition...")
-			os.chdir(ospath)
-			flashsingle("-w")
+			wipedataconfig = 1
+			# print("Wipe DATA Partition...")
+			# os.chdir(ospath)
+			# flashsingle("-w")
 			break
 		elif  wipedata == "N":
 			print("Cancel Wipe DATA Partition!")
@@ -772,6 +848,15 @@ def onlya_en(): # 新增onlya刷机方案 3.0版本
 				kkpath=imgpath+"\\"+imgxxx # 镜像文件
 				bb=imgxxx.replace('.img','') # 分区名字
 				flash(bb,kkpath)
+			if wipeuserconfig == 1:
+				print("Erasing userdata...")
+				os.chdir(ospath)
+				flashsingle("erase metadata")
+				flashsingle("erase userdata")
+			if wipedataconfig == 1:
+				print("Wipe DATA Partition...")
+				os.chdir(ospath)
+				flashsingle("-w")
 			# 重启设备 
 			print("Well Bro you are luck! I'm reboot now...")
 			time.sleep(3)
@@ -802,6 +887,8 @@ def mainchoice():
 	print("	")
 	print("4.Erofs_MTK机型:\n红米K50(rubens) 红米K50Pro(matisse)")
 	print("	")
+	print("55.Erofs_MTK_2机型:\n红米Note11T Pro(xaga)")
+	print("	")
 	print("5.打包成卡刷包(测试)")
 	print("	")
 	print("6.安装小米刷机驱动")
@@ -829,6 +916,11 @@ def mainchoice():
 			break
 		elif  userchocie == "4":
 			print("您选择了:%s，这是Erofs_MTK机型"%(userchocie))
+			erofs_mtk()
+			
+			break
+		elif  userchocie == "55":
+			print("您选择了:%s，这是Erofs_MTK_2机型"%(userchocie))
 			erofs_mtk()
 			
 			break
@@ -864,14 +956,17 @@ def mainchoice():
 			print("输入有误,请重新输入!")
 			time.sleep(1)
 def erofs():
+	global wipeuserconfig
+	global wipedataconfig
 	fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
-			print("清除双清用户数据")
-			os.chdir(ospath)
-			flashsingle("erase metadata")
-			flashsingle("erase userdata")
+			# print("清除双清用户数据")
+			# os.chdir(ospath)
+			# flashsingle("erase metadata")
+			# flashsingle("erase userdata")
+			wipeuserconfig = 1 
 			break
 		elif  wipeuser == "N":
 			print("取消双清用户数据")
@@ -881,9 +976,10 @@ def erofs():
 	while True:
 		wipedata = input("是否清除DATA分区(Y/N),某些时候不清除可能卡开机:\n")
 		if wipedata == "Y":
-			print("清除DATA分区")
-			os.chdir(ospath)
-			flashsingle("-w")
+			wipedataconfig = 1
+			# print("清除DATA分区")
+			# os.chdir(ospath)
+			# flashsingle("-w")
 			break
 		elif  wipedata == "N":
 			print("取消清除DATA分区")
@@ -920,6 +1016,15 @@ def erofs():
 					else:
 						flash(aa+"_ab",position)
 			flash("super",imgpath+"\\super.img")
+			if wipeuserconfig == 1:
+				print("清除双清用户数据")
+				os.chdir(ospath)
+				flashsingle("erase metadata")
+				flashsingle("erase userdata")
+			if wipedataconfig == 1:
+				print("清除DATA分区")
+				os.chdir(ospath)
+				flashsingle("-w")
 			# 设置活动分区
 			flashsingle("set_active a")
 			# 重启设备 
@@ -938,15 +1043,19 @@ def erofs():
 			break
 		else:
 			print("输入有误，重新输入！")
+# 新增xaga支持 v5.5.8
 def erofs_mtk():
+	global wipeuserconfig
+	global wipedataconfig
 	fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
-			print("清除双清用户数据")
-			os.chdir(ospath)
-			flashsingle("erase metadata")
-			flashsingle("erase userdata")
+			# print("清除双清用户数据")
+			# os.chdir(ospath)
+			# flashsingle("erase metadata")
+			# flashsingle("erase userdata")
+			wipeuserconfig = 1 
 			break
 		elif  wipeuser == "N":
 			print("取消双清用户数据")
@@ -956,9 +1065,10 @@ def erofs_mtk():
 	while True:
 		wipedata = input("是否清除DATA分区(Y/N),某些时候不清除可能卡开机:\n")
 		if wipedata == "Y":
-			print("清除DATA分区")
-			os.chdir(ospath)
-			flashsingle("-w")
+			wipedataconfig = 1
+			# print("清除DATA分区")
+			# os.chdir(ospath)
+			# flashsingle("-w")
 			break
 		elif  wipedata == "N":
 			print("取消清除DATA分区")
@@ -988,6 +1098,9 @@ def erofs_mtk():
 					if aa == "preloader_raw":
 						flash("preloader1",position)
 						flash("preloader2",position)
+					if aa == "preloader_xaga":
+						flash("preloader1",position)
+						flash("preloader2",position)
 					elif aa == "vendor_dlkm":
 						flashsingle("reboot fastboot")
 						flashsingle("create-logical-partition vendor_dlkm_a")
@@ -998,6 +1111,15 @@ def erofs_mtk():
 					else:
 						flash(aa+"_ab",position)
 			flash("super",imgpath+"\\super.img")
+			if wipeuserconfig == 1:
+				print("清除双清用户数据")
+				os.chdir(ospath)
+				flashsingle("erase metadata")
+				flashsingle("erase userdata")
+			if wipedataconfig == 1:
+				print("清除DATA分区")
+				os.chdir(ospath)
+				flashsingle("-w")
 			# 设置活动分区
 			flashsingle("set_active a")
 			# 重启设备 
@@ -1027,6 +1149,8 @@ def mainchoice_en():
 	print("	")
 	print("4.Erofs_MTK:\nRedmiK50(rubens) RedmiK50Pro(matisse)")
 	print("	")
+	print("55.Erofs_MTK_2:\nRedmiNote11T Pro(xaga)")
+	print("	")
 	print("5.Switching Zip (test)")
 	print("	")
 	print("6.Install the Flash driver")
@@ -1053,6 +1177,10 @@ def mainchoice_en():
 			
 			break
 		elif  userchocie == "4":
+			print("You choice:%s，This is Erofs_MTK Plan"%(userchocie))
+			erofs_mtk_en()
+			break
+		elif  userchocie == "55":
 			print("You choice:%s，This is Erofs_MTK Plan"%(userchocie))
 			erofs_mtk_en()
 			break
@@ -1087,14 +1215,17 @@ def mainchoice_en():
 			print("Error in input, Please re-enter!")
 			time.sleep(1)
 def erofs_en():
+	global wipeuserconfig
+	global wipedataconfig
 	fixboot_en()
 	while True:
 		wipeuser = input("Wipe userdata(Y/N):\n")
 		if wipeuser == "Y":
-			print("Erasing userdata...")
-			os.chdir(ospath)
-			flashsingle("erase metadata")
-			flashsingle("erase userdata")
+			wipeuserconfig = 1
+			# print("Erasing userdata...")
+			# os.chdir(ospath)
+			# flashsingle("erase metadata")
+			# flashsingle("erase userdata")
 			break
 		elif  wipeuser == "N":
 			print("Cancel Wipe userdata！")
@@ -1104,9 +1235,10 @@ def erofs_en():
 	while True:
 		wipedata = input("Wipe DATA Partition(Y/N),Sometimes it may not Boot if it is not wiped.:\n")
 		if wipedata == "Y":
-			print("Wipe DATA Partition...")
-			os.chdir(ospath)
-			flashsingle("-w")
+			wipedataconfig = 1
+			# print("Wipe DATA Partition...")
+			# os.chdir(ospath)
+			# flashsingle("-w")
 			break
 		elif  wipedata == "N":
 			print("Cancel Wipe DATA Partition!")
@@ -1143,6 +1275,15 @@ def erofs_en():
 					else:
 						flash(aa+"_ab",position)
 			flash("super",imgpath+"\\super.img")
+			if wipeuserconfig == 1:
+				print("Erasing userdata...")
+				os.chdir(ospath)
+				flashsingle("erase metadata")
+				flashsingle("erase userdata")
+			if wipedataconfig == 1:
+				print("Wipe DATA Partition...")
+				os.chdir(ospath)
+				flashsingle("-w")
 			# 设置活动分区
 			flashsingle("set_active a")
 			# 重启设备 
@@ -1160,15 +1301,19 @@ def erofs_en():
 			break
 		else:
 			print("Error in input, Please re-enter!")
+# 新增xaga支持 v5.5.8
 def erofs_mtk_en():
+	global wipeuserconfig
+	global wipedataconfig
 	fixboot_en()
 	while True:
 		wipeuser = input("Wipe userdata(Y/N):\n")
 		if wipeuser == "Y":
-			print("Erasing userdata...")
-			os.chdir(ospath)
-			flashsingle("erase metadata")
-			flashsingle("erase userdata")
+			wipeuserconfig = 1
+			# print("Erasing userdata...")
+			# os.chdir(ospath)
+			# flashsingle("erase metadata")
+			# flashsingle("erase userdata")
 			break
 		elif  wipeuser == "N":
 			print("Cancel Wipe userdata！")
@@ -1178,9 +1323,10 @@ def erofs_mtk_en():
 	while True:
 		wipedata = input("Wipe DATA Partition(Y/N),Sometimes it may not Boot if it is not wiped.:\n")
 		if wipedata == "Y":
-			print("Wipe DATA Partition...")
-			os.chdir(ospath)
-			flashsingle("-w")
+			wipedataconfig = 1
+			# print("Wipe DATA Partition...")
+			# os.chdir(ospath)
+			# flashsingle("-w")
 			break
 		elif  wipedata == "N":
 			print("Cancel Wipe DATA Partition!")
@@ -1210,6 +1356,9 @@ def erofs_mtk_en():
 					if aa == "preloader_raw":
 						flash("preloader1",position)
 						flash("preloader2",position)
+					if aa == "preloader_xaga":
+						flash("preloader1",position)
+						flash("preloader2",position)
 					elif aa == "vendor_dlkm":
 						flashsingle("reboot fastboot")
 						flashsingle("create-logical-partition vendor_dlkm_a")
@@ -1220,6 +1369,15 @@ def erofs_mtk_en():
 					else:
 						flash(aa+"_ab",position)
 			flash("super",imgpath+"\\super.img")
+			if wipeuserconfig == 1:
+				print("Erasing userdata...")
+				os.chdir(ospath)
+				flashsingle("erase metadata")
+				flashsingle("erase userdata")
+			if wipedataconfig == 1:
+				print("Wipe DATA Partition...")
+				os.chdir(ospath)
+				flashsingle("-w")
 			# 设置活动分区
 			flashsingle("set_active a")
 			# 重启设备 
