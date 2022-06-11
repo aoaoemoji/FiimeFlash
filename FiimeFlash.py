@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-06-11 17:18:38
+# @Last Modified time: 2022-06-11 20:31:03
 
 import os
 import time
@@ -37,7 +37,7 @@ wipeuserconfig = 0
 
 
 
-updatakey = "V5.5.8"
+updatakey = "V5.5.9"
 path = os.getcwd()
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
@@ -65,7 +65,6 @@ def bit():
 		print("当前系统为:32位")
 		print("开始安装小米刷机驱动...")
 		os.system(driver + 'DPInst32.exe')
-
 def bit_en():
 	if ('PROGRAMFILES(X86)' in os.environ) == True:
 		print("The current system is:64Bit")
@@ -102,8 +101,6 @@ def addFileIntoZipfile(srcDir, fp):
             # 把所有文件都压缩进入ZIP文件
             fp.write(subpath)
             addFileIntoZipfile(subpath, fp)
-
-
 def zipCompress(srcDir, desZipfile):
     with ZipFile(desZipfile, mode='a') as fp:
         addFileIntoZipfile(srcDir, fp)
@@ -250,7 +247,6 @@ def getbinary():
 			print("不支持的机型无法继续操作...")
 			time.sleep(3)
 			exit()
-
 # 识别并生成刷机脚本
 def getbinary_en():
 	intobinary = exe_path + "\\META-INF\\com\\google\\android\\update-binary"
@@ -382,7 +378,6 @@ def getbinary_en():
 			time.sleep(3)
 			exit()
 
-
 # 检测程序目录是否完整 V2.0版本
 def binfinder():
 	print("正在检测工作目录...")
@@ -430,8 +425,6 @@ def binfinder_en():
 		time.sleep(2)
 		os.system("cls")
 		pass
-
-
 
 # 识别机型代码 V4.0
 def getcode():
@@ -632,8 +625,6 @@ def getcode_en():
 		time.sleep(1)
 		mainchoice_en()
 
-
-
 # 新增修补boot文件
 def fixboot():
 	while True:
@@ -679,7 +670,6 @@ def fixboot_en():
 		else:
 			print("You may have made a big mistake, the size of the earth，Please Re-enter!")
 			break
-
 
 # 开始刷机脚本调用
 def vab():
@@ -955,6 +945,82 @@ def mainchoice():
 			os.system("cls")
 			print("输入有误,请重新输入!")
 			time.sleep(1)
+def mainchoice_en():
+	print('{:=^80}'.format(str1)) 
+	print("Please input the Number to select the Flash Plan:")
+	print("1.Erofs:\nXiaomi12(cupid) Xiaomi12Pro(zeus)\nXiaomi12X(psyche) XiaomiMIX4(odin) XiaomiCIVI(mona)")
+	print("	") 
+	print("2.Vab：\nXiaomiTablet5ProWifi(elish) Xiaomi11Pro(star) Xiaomi11(venus) Xiaomi11Young(renoir)\nXiaomi10S(thyme) RedmiK40(alioth) RedmiK40Pro(haydn) RedmiK40S(munch)")
+	print("	") 
+	print("3.OnlyA：\nXiaomi10(umi) Xiaomi10Pro(cmi) Xiaomi10Uitra(cas) Xiaomi10Young(vangogh)\nRedmiK30Pro(lmi) RedmiK30i-5G(picasso) RedmiK30S Plus(apollo)")
+	print("	")
+	print("4.Erofs_MTK:\nRedmiK50(rubens) RedmiK50Pro(matisse)")
+	print("	")
+	print("55.Erofs_MTK_2:\nRedmiNote11T Pro(xaga)")
+	print("	")
+	print("5.Switching Zip (test)")
+	print("	")
+	print("6.Install the Flash driver")
+	print("	")
+	print("0.Exit")
+	print(" ")
+	print('Note: The folder name to extract the 7Z package file name as the standard, otherwise not recognized to the model！')
+	print('{:=^80}'.format(str1)) 
+
+	while True:
+		userchocie = str(input("Enter Number:\n"))
+		if userchocie == "1":
+			print("You choice:%s，This is Erofs Plan"%(userchocie))
+			erofs_en()
+			break
+		elif  userchocie == "2":
+			print("You choice:%s，This is Vab Plan"%(userchocie))
+			erofs_en()
+			
+			break
+		elif  userchocie == "3":
+			print("You choice:%s，This is OnlyA Plan"%(userchocie))
+			onlya_en()
+			
+			break
+		elif  userchocie == "4":
+			print("You choice:%s，This is Erofs_MTK Plan"%(userchocie))
+			erofs_mtk_en()
+			break
+		elif  userchocie == "55":
+			print("You choice:%s，This is Erofs_MTK Plan"%(userchocie))
+			erofs_mtk_en()
+			break
+		elif  userchocie == "5":
+			path = os.getcwd()
+			exe_path = path + "\\lib"
+			dirpath = os.listdir(path)
+			metainf = exe_path + "\\META-INF"
+			todir = path + "\\META-INF"
+			for file in dirpath:
+				if file == "META-INF":
+					shutil.rmtree(path + "\\META-INF", ignore_errors=True)
+					print("Clean up the old META-INF")
+			getbinary_en()
+			shutil.copytree(metainf,todir)
+			print("Please be patient while the ZIP is being swiped and packed...")
+			paths = [r'.\\META-INF\\',r'.\images']
+			for path in paths:
+			    zipCompress(path,zipname)
+			makeclean_en()
+			print("Package is complete, please put into the device to perform the Flash!")
+			time.sleep(30)
+			break
+		elif  userchocie == "6":
+			bit_en()
+		elif  userchocie == "0":
+			print("You choice Exit after 3s...")
+			time.sleep(3)
+			exit()
+		else:
+			os.system("cls")
+			print("Error in input, Please re-enter!")
+			time.sleep(1)			
 def erofs():
 	global wipeuserconfig
 	global wipedataconfig
@@ -1087,6 +1153,7 @@ def erofs_mtk():
 			time.sleep(3)
 			# 添加一个防止小白的功能 V3.0版本
 			errorimg_list = ['system.img','vendor.img','product.img','odm.img','system_ext.img']
+			flashsingle("erase boot_ab")
 			for image_id in filelist:
 				position=imgpath+"\\"+image_id # 镜像文件
 				aa=image_id.replace('.img','') # 分区名字
@@ -1106,11 +1173,17 @@ def erofs_mtk():
 						flashsingle("create-logical-partition vendor_dlkm_a")
 						flashsingle("create-logical-partition vendor_dlkm_b 0")
 						flash("vendor_dlkm_a",position)
+					elif aa == "cust":
+						pass
 					elif aa == "super":
 						pass
 					else:
 						flash(aa+"_ab",position)
+			flashsingle("erase super")
+			flashsingle("reboot bootloader")
 			flash("super",imgpath+"\\super.img")
+			if os.path.exists(imgpath+"\\cust.img") == True:
+				flash("cust",imgpath+"\\cust.img")
 			if wipeuserconfig == 1:
 				print("清除双清用户数据")
 				os.chdir(ospath)
@@ -1138,82 +1211,8 @@ def erofs_mtk():
 			break
 		else:
 			print("输入有误，重新输入！")
-def mainchoice_en():
-	print('{:=^80}'.format(str1)) 
-	print("Please input the Number to select the Flash Plan:")
-	print("1.Erofs:\nXiaomi12(cupid) Xiaomi12Pro(zeus)\nXiaomi12X(psyche) XiaomiMIX4(odin) XiaomiCIVI(mona)")
-	print("	") 
-	print("2.Vab：\nXiaomiTablet5ProWifi(elish) Xiaomi11Pro(star) Xiaomi11(venus) Xiaomi11Young(renoir)\nXiaomi10S(thyme) RedmiK40(alioth) RedmiK40Pro(haydn) RedmiK40S(munch)")
-	print("	") 
-	print("3.OnlyA：\nXiaomi10(umi) Xiaomi10Pro(cmi) Xiaomi10Uitra(cas) Xiaomi10Young(vangogh)\nRedmiK30Pro(lmi) RedmiK30i-5G(picasso) RedmiK30S Plus(apollo)")
-	print("	")
-	print("4.Erofs_MTK:\nRedmiK50(rubens) RedmiK50Pro(matisse)")
-	print("	")
-	print("55.Erofs_MTK_2:\nRedmiNote11T Pro(xaga)")
-	print("	")
-	print("5.Switching Zip (test)")
-	print("	")
-	print("6.Install the Flash driver")
-	print("	")
-	print("0.Exit")
-	print(" ")
-	print('Note: The folder name to extract the 7Z package file name as the standard, otherwise not recognized to the model！')
-	print('{:=^80}'.format(str1)) 
 
-	while True:
-		userchocie = str(input("Enter Number:\n"))
-		if userchocie == "1":
-			print("You choice:%s，This is Erofs Plan"%(userchocie))
-			erofs_en()
-			break
-		elif  userchocie == "2":
-			print("You choice:%s，This is Vab Plan"%(userchocie))
-			erofs_en()
-			
-			break
-		elif  userchocie == "3":
-			print("You choice:%s，This is OnlyA Plan"%(userchocie))
-			onlya_en()
-			
-			break
-		elif  userchocie == "4":
-			print("You choice:%s，This is Erofs_MTK Plan"%(userchocie))
-			erofs_mtk_en()
-			break
-		elif  userchocie == "55":
-			print("You choice:%s，This is Erofs_MTK Plan"%(userchocie))
-			erofs_mtk_en()
-			break
-		elif  userchocie == "5":
-			path = os.getcwd()
-			exe_path = path + "\\lib"
-			dirpath = os.listdir(path)
-			metainf = exe_path + "\\META-INF"
-			todir = path + "\\META-INF"
-			for file in dirpath:
-				if file == "META-INF":
-					shutil.rmtree(path + "\\META-INF", ignore_errors=True)
-					print("Clean up the old META-INF")
-			getbinary_en()
-			shutil.copytree(metainf,todir)
-			print("Please be patient while the ZIP is being swiped and packed...")
-			paths = [r'.\\META-INF\\',r'.\images']
-			for path in paths:
-			    zipCompress(path,zipname)
-			makeclean_en()
-			print("Package is complete, please put into the device to perform the Flash!")
-			time.sleep(30)
-			break
-		elif  userchocie == "6":
-			bit_en()
-		elif  userchocie == "0":
-			print("You choice Exit after 3s...")
-			time.sleep(3)
-			exit()
-		else:
-			os.system("cls")
-			print("Error in input, Please re-enter!")
-			time.sleep(1)
+
 def erofs_en():
 	global wipeuserconfig
 	global wipedataconfig
@@ -1344,6 +1343,7 @@ def erofs_mtk_en():
 			print("Wait 3s and will start...")
 			time.sleep(3)
 			# 添加一个防止小白的功能 V3.0版本
+			flashsingle("erase boot_ab")
 			errorimg_list = ['system.img','vendor.img','product.img','odm.img','system_ext.img']
 			for image_id in filelist:
 				position=imgpath+"\\"+image_id # 镜像文件
@@ -1368,6 +1368,8 @@ def erofs_mtk_en():
 						pass
 					else:
 						flash(aa+"_ab",position)
+			flashsingle("erase super")
+			flashsingle("reboot bootloader")
 			flash("super",imgpath+"\\super.img")
 			if wipeuserconfig == 1:
 				print("Erasing userdata...")
@@ -1396,8 +1398,6 @@ def erofs_mtk_en():
 			break
 		else:
 			print("Error in input, Please re-enter!")
-
-
 
 
 # 程序引导入口
@@ -1445,8 +1445,6 @@ def mainleader_en():
 		mainchoice_en()
 	else:
 		pass
-
-
 
 
 # V4.3增加语言检测
