@@ -2,7 +2,7 @@
 # @Author: aoao
 # @Date:   2022-05-06 11:11:25
 # @Last Modified by:   aoao
-# @Last Modified time: 2022-06-11 20:31:03
+# @Last Modified time: 2022-06-13 17:58:25
 
 import os
 import time
@@ -37,7 +37,7 @@ wipeuserconfig = 0
 
 
 
-updatakey = "V5.5.9"
+updatakey = "V5.6.0"
 path = os.getcwd()
 ospath = path + "\\DXY"
 imgpath = path + "\\images\\"
@@ -678,7 +678,7 @@ def vab():
 def onlya(): # 新增onlya刷机方案 3.0版本
 	global wipeuserconfig
 	global wipedataconfig
-	fixboot()
+	# fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
@@ -772,7 +772,7 @@ def onlya(): # 新增onlya刷机方案 3.0版本
 def onlya_en(): # 新增onlya刷机方案 3.0版本
 	global wipeuserconfig
 	global wipedataconfig
-	fixboot_en()
+	# fixboot_en()
 	while True:
 		wipeuser = input("Wipe userdata(Y/N):\n")
 		if wipeuser == "Y":
@@ -879,10 +879,10 @@ def mainchoice():
 	print("	")
 	print("55.Erofs_MTK_2机型:\n红米Note11T Pro(xaga)")
 	print("	")
-	print("5.打包成卡刷包(测试)")
-	print("	")
-	print("6.安装小米刷机驱动")
-	print("	")
+	# print("5.打包成卡刷包(测试)")
+	# print("	")
+	# print("6.安装小米刷机驱动")
+	# print("	")
 	print("0.退出程序")
 	print("	")
 	print('需注意：文件夹名称请以解压的7z压缩包文件名为准，否则识别不到机型！')
@@ -958,10 +958,10 @@ def mainchoice_en():
 	print("	")
 	print("55.Erofs_MTK_2:\nRedmiNote11T Pro(xaga)")
 	print("	")
-	print("5.Switching Zip (test)")
-	print("	")
-	print("6.Install the Flash driver")
-	print("	")
+	# print("5.Switching Zip (test)")
+	# print("	")
+	# print("6.Install the Flash driver")
+	# print("	")
 	print("0.Exit")
 	print(" ")
 	print('Note: The folder name to extract the 7Z package file name as the standard, otherwise not recognized to the model！')
@@ -1024,7 +1024,7 @@ def mainchoice_en():
 def erofs():
 	global wipeuserconfig
 	global wipedataconfig
-	fixboot()
+	# fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
@@ -1113,7 +1113,7 @@ def erofs():
 def erofs_mtk():
 	global wipeuserconfig
 	global wipedataconfig
-	fixboot()
+	# fixboot()
 	while True:
 		wipeuser = input("是否双清用户数据(Y/N):\n")
 		if wipeuser == "Y":
@@ -1165,7 +1165,7 @@ def erofs_mtk():
 					if aa == "preloader_raw":
 						flash("preloader1",position)
 						flash("preloader2",position)
-					if aa == "preloader_xaga":
+					elif aa == "preloader_xaga":
 						flash("preloader1",position)
 						flash("preloader2",position)
 					elif aa == "vendor_dlkm":
@@ -1178,7 +1178,7 @@ def erofs_mtk():
 					elif aa == "super":
 						pass
 					else:
-						flash(aa+"_ab",position)
+						flash( aa + "_ab",position)
 			flashsingle("erase super")
 			flashsingle("reboot bootloader")
 			flash("super",imgpath+"\\super.img")
@@ -1216,7 +1216,7 @@ def erofs_mtk():
 def erofs_en():
 	global wipeuserconfig
 	global wipedataconfig
-	fixboot_en()
+	# fixboot_en()
 	while True:
 		wipeuser = input("Wipe userdata(Y/N):\n")
 		if wipeuser == "Y":
@@ -1304,7 +1304,7 @@ def erofs_en():
 def erofs_mtk_en():
 	global wipeuserconfig
 	global wipedataconfig
-	fixboot_en()
+	# fixboot_en()
 	while True:
 		wipeuser = input("Wipe userdata(Y/N):\n")
 		if wipeuser == "Y":
@@ -1356,7 +1356,7 @@ def erofs_mtk_en():
 					if aa == "preloader_raw":
 						flash("preloader1",position)
 						flash("preloader2",position)
-					if aa == "preloader_xaga":
+					elif aa == "preloader_xaga":
 						flash("preloader1",position)
 						flash("preloader2",position)
 					elif aa == "vendor_dlkm":
